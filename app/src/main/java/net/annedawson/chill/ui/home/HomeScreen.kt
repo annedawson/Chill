@@ -83,7 +83,7 @@ fun HomeScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             InventoryTopAppBar(
-                title = stringResource(HomeDestination.titleRes),
+                title = stringResource(HomeDestination.titleRes)  + ' ' +  stringResource(R.string.freezer_organizer),
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )

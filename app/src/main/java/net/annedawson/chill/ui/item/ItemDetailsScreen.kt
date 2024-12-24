@@ -63,10 +63,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 
-
-
-
-
 object ItemDetailsDestination : NavigationDestination {
     override val route = "item_details"
     override val titleRes = R.string.item_detail_title
@@ -109,7 +105,8 @@ fun ItemDetailsScreen(
         ItemDetailsBody(
             //itemDetailsUiState = ItemDetailsUiState(),
             itemDetailsUiState = uiState.value,
-            onSellItem = { viewModel.reduceQuantityByOne() },
+            onRemoveOne = { viewModel.reduceQuantityByOne() },
+            onAddOne = { viewModel.increaseQuantityByOne() },
             onDelete = {
                 coroutineScope.launch {
                     viewModel.deleteItem()
@@ -130,7 +127,8 @@ fun ItemDetailsScreen(
 @Composable
 private fun ItemDetailsBody(
     itemDetailsUiState: ItemDetailsUiState,
-    onSellItem: () -> Unit,
+    onRemoveOne: () -> Unit,
+    onAddOne: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -145,12 +143,20 @@ private fun ItemDetailsBody(
             modifier = Modifier.fillMaxWidth()
         )
         Button(
-            onClick = onSellItem,
+            onClick = onAddOne,
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small,
             enabled = true
         ) {
-            Text(stringResource(R.string.sell))
+            Text(stringResource(R.string.add_one))
+        }
+        Button(
+            onClick = onRemoveOne,
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.small,
+            enabled = true
+        ) {
+            Text(stringResource(R.string.remove_one))
         }
         OutlinedButton(
             onClick = { deleteConfirmationRequired = true },
@@ -199,7 +205,7 @@ fun ItemDetails(
                 )
             )
             ItemDetailsRow(
-                labelResID = R.string.quantity_in_stock,
+                labelResID = R.string.quantity_in_freezer,
                 itemDetail = item.quantity.toString(),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
@@ -258,7 +264,8 @@ fun ItemDetailsScreenPreview() {
                 outOfStock = true,
                 itemDetails = ItemDetails(1, "Pen", "$100", "10")
             ),
-            onSellItem = {},
+            onRemoveOne = {},
+            onAddOne = {},
             onDelete = {}
         )
     }

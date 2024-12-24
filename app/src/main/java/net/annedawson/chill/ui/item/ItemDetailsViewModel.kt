@@ -63,6 +63,13 @@ class ItemDetailsViewModel(
         }
     }
 
+    fun increaseQuantityByOne() {
+        viewModelScope.launch {
+            val currentItem = uiState.value.itemDetails.toItem()
+            itemsRepository.updateItem(currentItem.copy(quantity = currentItem.quantity + 1))
+        }
+    }
+
     suspend fun deleteItem() {
         itemsRepository.deleteItem(uiState.value.itemDetails.toItem())
     }
