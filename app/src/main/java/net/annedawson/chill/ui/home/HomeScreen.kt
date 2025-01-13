@@ -191,7 +191,7 @@ private fun InventoryItem(
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = stringResource(R.string.date_req, item.date.toString()),
+                text = "Date: " + item.date.toString() + "",
                 style = MaterialTheme.typography.titleMedium
             )
         }
