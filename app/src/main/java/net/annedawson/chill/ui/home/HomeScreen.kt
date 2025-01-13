@@ -17,7 +17,7 @@
 package net.annedawson.chill.ui.home
 
 // In Android Studio, use the menu Code -> Optimise imports
-// to optimi
+// to optimize the layout of the import statements
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,6 +59,7 @@ import net.annedawson.chill.ui.AppViewModelProvider
 import net.annedawson.chill.ui.item.formatedPrice
 import net.annedawson.chill.ui.navigation.NavigationDestination
 import net.annedawson.chill.ui.theme.InventoryTheme
+import java.util.Date
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -189,6 +190,10 @@ private fun InventoryItem(
                 text = stringResource(R.string.in_stock, item.quantity),
                 style = MaterialTheme.typography.titleMedium
             )
+            Text(
+                text = stringResource(R.string.date_req, item.date.toString()),
+                style = MaterialTheme.typography.titleMedium
+            )
         }
     }
 }
@@ -198,8 +203,18 @@ private fun InventoryItem(
 fun HomeBodyPreview() {
     InventoryTheme {
         HomeBody(listOf(
-            Item(1, "Game", 100.0, 20), Item(2, "Pen", 200.0, 30), Item(3, "TV", 300.0, 50)
+            Item(1, "Game", 1.0, 20,234L), Item(2, "Pen", 1.0, 30,234L), Item(3, "TV", 1.0, 30,234L)
         ), onItemClick = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun InventoryItemPreview() {
+   InventoryTheme {
+        InventoryItem(
+            Item(1, "Game", 1.0, 20,234L),
+        )
     }
 }
 
@@ -208,15 +223,5 @@ fun HomeBodyPreview() {
 fun HomeBodyEmptyListPreview() {
     InventoryTheme {
         HomeBody(listOf(), onItemClick = {})
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun InventoryItemPreview() {
-    InventoryTheme {
-        InventoryItem(
-            Item(1, "Game", 100.0, 20),
-        )
     }
 }

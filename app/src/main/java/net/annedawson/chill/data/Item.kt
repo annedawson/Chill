@@ -17,6 +17,7 @@
 package net.annedawson.chill.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Date
 
 /**
  * Entity data class defines the table.
@@ -29,5 +30,7 @@ data class Item(
     // which is necessary for the id to auto generate id values.
     val name: String,
     val price: Double,
-    val quantity: Int
+    val quantity: Int,
+    val date: Long  // Use Long for the date value.
+    // It is not possible to store a Date in a Room database.
 )

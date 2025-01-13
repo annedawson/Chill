@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModel
 import net.annedawson.chill.data.Item
 import java.text.NumberFormat
 import net.annedawson.chill.data.ItemsRepository
-
+import java.util.Date
 /**
  * ViewModel to validate and insert items in the Room database.
  */
@@ -34,6 +34,19 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
      */
     var itemUiState by mutableStateOf(ItemUiState())
         private set
+
+    /*
+
+    The private set modifier is used to define properties
+    that have a public getter but a private setter.
+    This allows the property to be read from outside the class
+    while restricting modification to within the class itself.
+    This encapsulation technique is useful for maintaining control
+    over how a property's value is modified,
+    ensuring that it can only be changed
+    through specific methods within the class.
+
+     */
 
     /**
      * Updates the [itemUiState] with the value provided in the argument. This method also triggers
@@ -49,7 +62,7 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
     //  before adding or updating the entity in the database.
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()
+            name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank() && date.isNotBlank()
         }
     }
 
@@ -74,19 +87,24 @@ data class ItemDetails(
     val name: String = "",
     val price: String = "",
     val quantity: String = "",
+    val date: String = ""
 )
 
 /**
  * Extension function to convert [ItemDetails] to [Item]. If the value of [ItemDetails.price] is
  * not a valid [Double], then the price will be set to 0.0. Similarly if the value of
- * [ItemDetails.quantity] is not a valid [Int], then the quantity will be set to 0
+ * [ItemDetails.quantity] is not a valid [Int], then the quantity will be set to 0,
+ *  [ItemDetails.date] is not a valid [Long], then the quantity will be set to 0L,
  */
 fun ItemDetails.toItem(): Item = Item(
     id = id,
     name = name,
     price = price.toDoubleOrNull() ?: 0.0,
-    quantity = quantity.toIntOrNull() ?: 0
+    quantity = quantity.toIntOrNull() ?: 0,
+    date = date.toLongOrNull() ?: 0L
 )
+// everything entered by the user is a string
+// how is entering a date handled in JetpackCompose??
 
 fun Item.formatedPrice(): String {
     return NumberFormat.getCurrencyInstance().format(price)
@@ -107,5 +125,6 @@ fun Item.toItemDetails(): ItemDetails = ItemDetails(
     id = id,
     name = name,
     price = price.toString(),
-    quantity = quantity.toString()
+    quantity = quantity.toString(),
+    date = date.toString()
 )

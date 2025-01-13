@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 /**
  * Database class with a singleton Instance object.
  */
-@Database(entities = [Item::class], version = 1, exportSchema = false)
+@Database(entities = [Item::class], version = 2, exportSchema = false)
+@TypeConverters(Converters::class) // Apply the type converter for the Date class
 abstract class InventoryDatabase : RoomDatabase() {
     // [ ] is the array of tables.
     // Item::class references the Item class.
@@ -43,6 +45,8 @@ abstract class InventoryDatabase : RoomDatabase() {
             // which is the companion object itself
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, InventoryDatabase::class.java, "item_database")
+                    .fallbackToDestructiveMigration() // This will delete the database on upgrade
+                    // i.e. when the database version number above changes
                     .build()
                     .also { Instance = it }
             }
@@ -64,7 +68,7 @@ abstract class InventoryDatabase : RoomDatabase() {
             // which makes sure the database
             // only gets initialized once
             // and there is only one instance of the database.
-            // This pattern is the singletopn pattern
+            // This pattern is the singleton pattern
         }
     }
 }
