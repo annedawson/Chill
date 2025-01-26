@@ -16,7 +16,8 @@ abstract class InventoryDatabase : RoomDatabase() {
     // Item::class references the Item class.
     // The class you define is abstract because
     // Room creates the implementation for you.
-    abstract fun itemDao(): ItemDao  // Room creates the implementation for you
+    abstract fun itemDao(): ItemDao
+    // Room creates the implementation for you
     // as long as you return a DAO interface (which ItemDao is).
 
 

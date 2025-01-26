@@ -32,5 +32,5 @@ data class Item(
     val price: Double,
     val quantity: Int,
     val date: Long  // Use Long for the date value.
-    // It is not possible to store a Date in a Room database.
+    // It is not possible to store a Date object in a Room database.
 )

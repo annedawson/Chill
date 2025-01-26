@@ -57,7 +57,7 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
             ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
     }
 
-    //  Check if the name, price, and quantity are empty.
+    //  Check if the name, price, quantity and date are empty.
     //  You use this function to verify user input
     //  before adding or updating the entity in the database.
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {

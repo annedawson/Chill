@@ -35,7 +35,7 @@ import net.annedawson.chill.R.string
 import net.annedawson.chill.ui.navigation.InventoryNavHost
 
 /**
- * Top level composable that represents screens for the application.
+ * Top Qlevel composable that represents screens for the application.
  */
 @Composable
 fun InventoryApp(navController: NavHostController = rememberNavController()) {

@@ -143,6 +143,15 @@ private fun ItemDetailsBody(
             item = itemDetailsUiState.itemDetails.toItem(),
             modifier = Modifier.fillMaxWidth()
         )
+        // note, ItemDetails is the name of a composable function
+        // of the ItemDetailsScreen.kt file
+        // AND a data class in ItemEntryViewModel.kt, where each
+        // ItemDetails property: name, price, quantity, date
+        // is a String. In the ItemDetails composable,
+        // the itemeDetails string version is converted to an actual Item
+        // with the correct data types for storing to the Room database.
+
+
         Button(
             onClick = onAddOne,
             modifier = Modifier.fillMaxWidth(),

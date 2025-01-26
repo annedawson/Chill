@@ -84,7 +84,7 @@ fun HomeScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             InventoryTopAppBar(
-                title = stringResource(HomeDestination.titleRes)  + ' ' +  stringResource(R.string.freezer_organizer),
+                title = stringResource(HomeDestination.titleRes) + ' ' + stringResource(R.string.freezer_organizer),
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )
@@ -186,42 +186,49 @@ private fun InventoryItem(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-            Text(
-                text = stringResource(R.string.in_stock, item.quantity),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = "Date: " + item.date.toString() + "",
-                style = MaterialTheme.typography.titleMedium
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.in_stock, item.quantity),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                    text = "Date: " + item.date.toString() + "",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+        }
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun HomeBodyPreview() {
+        InventoryTheme {
+            HomeBody(listOf(
+                Item(1, "Game", 1.0, 20, 234L),
+                Item(2, "Pen", 1.0, 30, 234L),
+                Item(3, "TV", 1.0, 30, 234L)
+            ), onItemClick = {})
+        }
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun InventoryItemPreview() {
+        InventoryTheme {
+            InventoryItem(
+                Item(1, "Game", 1.0, 20, 234L),
             )
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun HomeBodyPreview() {
-    InventoryTheme {
-        HomeBody(listOf(
-            Item(1, "Game", 1.0, 20,234L), Item(2, "Pen", 1.0, 30,234L), Item(3, "TV", 1.0, 30,234L)
-        ), onItemClick = {})
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun InventoryItemPreview() {
-   InventoryTheme {
-        InventoryItem(
-            Item(1, "Game", 1.0, 20,234L),
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeBodyEmptyListPreview() {
-    InventoryTheme {
-        HomeBody(listOf(), onItemClick = {})
+    @Preview(showBackground = true)
+    @Composable
+    fun HomeBodyEmptyListPreview() {
+        InventoryTheme {
+            HomeBody(listOf(), onItemClick = {})
+        }
     }
 }

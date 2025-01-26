@@ -26,13 +26,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
@@ -48,7 +55,14 @@ import net.annedawson.chill.ui.theme.InventoryTheme
 import java.util.Currency
 import java.util.Locale
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 
 object ItemEntryDestination : NavigationDestination {
     override val route = "item_entry"
@@ -124,6 +138,8 @@ fun ItemEntryBody(
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemInputForm(
     itemDetails: ItemDetails,
@@ -131,10 +147,23 @@ fun ItemInputForm(
     onValueChange: (ItemDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
+    // do I put the remembers for date here? seems to work
+
+    var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var showDatePicker by remember { mutableStateOf(false) }
+    var dateText by remember { mutableStateOf(convertMillisToDate(selectedDateMillis)) }
+    var isError by remember { mutableStateOf(false) }
+
+    //val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
+    // The line below fixed the error where the date picker shows the correct current date,
+    // but also highlighted the day before the current date (in some timezones).
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = null)
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
+
         OutlinedTextField(
             value = itemDetails.name,
             onValueChange = { onValueChange(itemDetails.copy(name = it)) },
@@ -180,8 +209,9 @@ fun ItemInputForm(
             singleLine = true
         )
 
+        // The following is my original code, entering the date as a long int.
 
-        OutlinedTextField(
+        /*OutlinedTextField(
             value = itemDetails.date,
             onValueChange = { onValueChange(itemDetails.copy(date = it)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -194,9 +224,57 @@ fun ItemInputForm(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
+        )*/
+
+        OutlinedTextField(
+            value = dateText,
+            onValueChange = { newText ->
+                dateText = newText
+                try {
+                    selectedDateMillis = convertDateToMillis(newText)
+                    isError = false
+                } catch (e: ParseException) {
+                    isError = true
+                }
+            },
+            label = { Text("Select Date") },
+            isError = isError,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
 
+        Button(onClick = { showDatePicker = true }) {
+            Text("Open Date Picker")
+        }
 
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    Button(onClick = {
+                        datePickerState.selectedDateMillis?.let {
+                            selectedDateMillis = it
+                            selectedDateMillis = epochToLocalTimeZoneConvertor(selectedDateMillis)
+                            dateText = convertMillisToDate(selectedDateMillis)
+                        }
+                        showDatePicker = false
+                    }) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { showDatePicker = false }) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
+
+
+
+
+   // all code below is original
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_fields),
@@ -205,6 +283,34 @@ fun ItemInputForm(
         }
     }
 }
+
+
+fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
+}
+
+fun convertDateToMillis(dateString: String): Long {
+    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    return formatter.parse(dateString)?.time ?: throw ParseException("Invalid date format", 0)
+}
+
+fun epochToLocalTimeZoneConvertor(epoch: Long): Long {
+    val epochCalendar = Calendar.getInstance()
+    epochCalendar.timeZone = TimeZone.getTimeZone("UTC")
+    epochCalendar.timeInMillis = epoch
+    val converterCalendar = Calendar.getInstance()
+    converterCalendar.set(
+        epochCalendar.get(Calendar.YEAR),
+        epochCalendar.get(Calendar.MONTH),
+        epochCalendar.get(Calendar.DATE),
+        epochCalendar.get(Calendar.HOUR_OF_DAY),
+        epochCalendar.get(Calendar.MINUTE),
+    )
+    converterCalendar.timeZone = TimeZone.getDefault()
+    return converterCalendar.timeInMillis
+}
+
 
 @Preview(showBackground = true)
 @Composable
