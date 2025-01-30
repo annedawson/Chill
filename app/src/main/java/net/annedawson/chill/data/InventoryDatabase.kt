@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 /**
  * Database class with a singleton Instance object.
  */
-@Database(entities = [Item::class], version = 2, exportSchema = false)
+@Database(entities = [Item::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class) // Apply the type converter for the Date class
 abstract class InventoryDatabase : RoomDatabase() {
     // [ ] is the array of tables.

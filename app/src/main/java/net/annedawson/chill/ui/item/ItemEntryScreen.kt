@@ -210,7 +210,6 @@ fun ItemInputForm(
         )
 
         // The following is my original code, entering the date as a long int.
-
         /*OutlinedTextField(
             value = itemDetails.date,
             onValueChange = { onValueChange(itemDetails.copy(date = it)) },
@@ -226,8 +225,14 @@ fun ItemInputForm(
             singleLine = true
         )*/
 
+        Button(onClick = { showDatePicker = true }) {
+            Text("Select date")
+        }
+
+
         OutlinedTextField(
             value = dateText,
+            //value = itemDetails.date,
             onValueChange = { newText ->
                 dateText = newText
                 try {
@@ -237,15 +242,27 @@ fun ItemInputForm(
                     isError = true
                 }
             },
-            label = { Text("Select Date") },
+            label = { Text(stringResource(R.string.date_req)) },
+            //label = { Text("Selected date*") },
             isError = isError,
-            modifier = Modifier.padding(bottom = 8.dp)
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            //modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            // add next 2 lines
+            enabled = enabled,
+            singleLine = true
         )
 
-        Button(onClick = { showDatePicker = true }) {
+       /* Button(onClick = { showDatePicker = true }) {
             Text("Open Date Picker")
         }
-
+*/
         if (showDatePicker) {
             DatePickerDialog(
                 onDismissRequest = { showDatePicker = false },
@@ -273,7 +290,6 @@ fun ItemInputForm(
 
 
 
-
    // all code below is original
         if (enabled) {
             Text(
@@ -284,7 +300,7 @@ fun ItemInputForm(
     }
 }
 
-
+// Added three date conversion functions
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))

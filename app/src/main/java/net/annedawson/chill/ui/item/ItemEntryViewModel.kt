@@ -23,7 +23,11 @@ import androidx.lifecycle.ViewModel
 import net.annedawson.chill.data.Item
 import java.text.NumberFormat
 import net.annedawson.chill.data.ItemsRepository
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
+
 /**
  * ViewModel to validate and insert items in the Room database.
  */
@@ -101,10 +105,20 @@ fun ItemDetails.toItem(): Item = Item(
     name = name,
     price = price.toDoubleOrNull() ?: 0.0,
     quantity = quantity.toIntOrNull() ?: 0,
-    date = date.toLongOrNull() ?: 0L
+    date = convertDateToMillis(date) ?: 0L
 )
-// everything entered by the user is a string
-// how is entering a date handled in JetpackCompose??
+// everything entered by the user into an outlined text field is a string
+
+/**
+ * Extension function to convert [Item] to [ItemDetails]
+ */
+fun Item.toItemDetails(): ItemDetails = ItemDetails(
+    id = id,
+    name = name,
+    price = price.toString(),
+    quantity = quantity.toString(),
+    date = convertMillisToDate(date)
+)
 
 fun Item.formatedPrice(): String {
     return NumberFormat.getCurrencyInstance().format(price)
@@ -118,13 +132,5 @@ fun Item.toItemUiState(isEntryValid: Boolean = false): ItemUiState = ItemUiState
     isEntryValid = isEntryValid
 )
 
-/**
- * Extension function to convert [Item] to [ItemDetails]
- */
-fun Item.toItemDetails(): ItemDetails = ItemDetails(
-    id = id,
-    name = name,
-    price = price.toString(),
-    quantity = quantity.toString(),
-    date = date.toString()
-)
+
+
