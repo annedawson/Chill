@@ -263,6 +263,22 @@ fun ItemInputForm(
             Text("Open Date Picker")
         }
 */
+//        if (showDatePicker) {
+//            DatePickerDialog(
+//                onDismissRequest = { showDatePicker = false },
+//                confirmButton = {
+//                    Button(onClick = {
+//                        datePickerState.selectedDateMillis?.let {
+//                            selectedDateMillis = it
+//                            selectedDateMillis = epochToLocalTimeZoneConvertor(selectedDateMillis)
+//                            dateText = convertMillisToDate(selectedDateMillis)
+//                        }
+//                        showDatePicker = false
+//                    }) {
+//                        Text("OK")
+//                    }
+//                },
+
         if (showDatePicker) {
             DatePickerDialog(
                 onDismissRequest = { showDatePicker = false },
@@ -272,6 +288,10 @@ fun ItemInputForm(
                             selectedDateMillis = it
                             selectedDateMillis = epochToLocalTimeZoneConvertor(selectedDateMillis)
                             dateText = convertMillisToDate(selectedDateMillis)
+
+                            // *** THIS IS THE KEY CHANGE ***
+                            onValueChange(itemDetails.copy(date = dateText)) // Update itemDetails!
+
                         }
                         showDatePicker = false
                     }) {
