@@ -59,7 +59,9 @@ import net.annedawson.chill.ui.AppViewModelProvider
 import net.annedawson.chill.ui.item.formatedPrice
 import net.annedawson.chill.ui.navigation.NavigationDestination
 import net.annedawson.chill.ui.theme.InventoryTheme
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -195,12 +197,15 @@ private fun InventoryItem(
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
-                    text = "Date: " + item.date.toString() + "",
+                    //text = "Date: " + item.date.toString() + "",
+                    text = "Date: " + convertMillisToDate(item.date),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
         }
     }
+
+
 
     @Preview(showBackground = true)
     @Composable
@@ -231,4 +236,9 @@ private fun InventoryItem(
             HomeBody(listOf(), onItemClick = {})
         }
     }
+}
+
+fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
 }
