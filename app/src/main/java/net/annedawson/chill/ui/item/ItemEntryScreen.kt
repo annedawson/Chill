@@ -326,10 +326,31 @@ fun convertMillisToDate(millis: Long): String {
     return formatter.format(Date(millis))
 }
 
+/*
 fun convertDateToMillis(dateString: String): Long {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
     return formatter.parse(dateString)?.time ?: throw ParseException("Invalid date format", 0)
 }
+*/
+
+
+fun convertDateToMillis(dateString: String, dateFormat: String = "MM/dd/yyyy"): Long {
+    println("convertDateToMillis called with: '$dateString'")
+    if (dateString.isBlank()) { // Check if it's empty or whitespace-only
+        println("Error: dateString is empty or blank") //You can log the error.
+        return 0L // Or handle it in another way
+    }
+    val formatter = SimpleDateFormat(dateFormat, Locale.US)
+    return try {
+        val date: Date = formatter.parse(dateString) ?: return 0L // Handle parsing failure
+        date.time
+    } catch (e: Exception) {
+        // Handle parsing exception, possibly log the error
+        println("Error parsing date: $dateString. Error: ${e.message}")
+        0L
+    }
+}
+
 
 fun epochToLocalTimeZoneConvertor(epoch: Long): Long {
     val epochCalendar = Calendar.getInstance()
