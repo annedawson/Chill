@@ -198,7 +198,7 @@ private fun InventoryItem(
                 Spacer(Modifier.weight(1f))
                 Text(
                     //text = "Date: " + item.date.toString() + "",
-                    text = "Date: " + convertMillisToDate(item.date),
+                    text = convertMillisToDate(item.date),
                     style = MaterialTheme.typography.titleMedium
                 )
             }

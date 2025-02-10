@@ -16,6 +16,7 @@
 
 package net.annedawson.chill.ui.item
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -63,6 +64,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
+import androidx.compose.foundation.layout.Box
 
 object ItemEntryDestination : NavigationDestination {
     override val route = "item_entry"
@@ -88,7 +90,7 @@ fun ItemEntryScreen(
                 navigateUp = onNavigateUp
             )
         }  // the following is a trailing lambda of the Scaffold Composable
-           // with innerPadding as its input parameter
+        // with innerPadding as its input parameter
     ) { innerPadding ->
         ItemEntryBody(
             itemUiState = viewModel.itemUiState,
@@ -121,7 +123,7 @@ fun ItemEntryBody(
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large)),
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium))
-        ) {
+    ) {
         ItemInputForm(
             itemDetails = itemUiState.itemDetails,
             onValueChange = onItemValueChange,
@@ -138,7 +140,6 @@ fun ItemEntryBody(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemInputForm(
@@ -147,14 +148,18 @@ fun ItemInputForm(
     onValueChange: (ItemDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
-    // do I put the remembers for date here? seems to work
-
     var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var showDatePicker by remember { mutableStateOf(false) }
     var dateText by remember { mutableStateOf(convertMillisToDate(selectedDateMillis)) }
     var isError by remember { mutableStateOf(false) }
 
-    //val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
+    // *** THIS IS THE NEW DEFAULT TEXT ***
+    if (itemDetails.date == "0") {
+        dateText = "Click to select date"
+    } else {
+        dateText = itemDetails.date
+    }
+
     // The line below fixed the error where the date picker shows the correct current date,
     // but also highlighted the day before the current date (in some timezones).
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = null)
@@ -209,76 +214,49 @@ fun ItemInputForm(
             singleLine = true
         )
 
-        // The following is my original code, entering the date as a long int.
-        /*OutlinedTextField(
-            value = itemDetails.date,
-            onValueChange = { onValueChange(itemDetails.copy(date = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(stringResource(R.string.date_req)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )*/
-
-        Button(onClick = { showDatePicker = true }) {
-            Text("Select date")
-        }
-
-
-        OutlinedTextField(
-            value = dateText,
-            //value = itemDetails.date,
-            onValueChange = { newText ->
-                dateText = newText
-                try {
-                    selectedDateMillis = convertDateToMillis(newText)
-                    isError = false
-                } catch (e: ParseException) {
-                    isError = true
-                }
-            },
-            label = { Text(stringResource(R.string.date_req)) },
-            //label = { Text("Selected date*") },
-            isError = isError,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            //modifier = Modifier.padding(bottom = 8.dp)
+        // Date picker section
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            // add next 2 lines
-            enabled = enabled,
-            singleLine = true
-        )
+                .clickable { showDatePicker = true }
+                .padding(bottom = dimensionResource(id = R.dimen.padding_small))
+        ) {
+            Text(
+                text = dateText,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            if (dateText == "Click to select date"){
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = { },
+                    label = { Text(stringResource(R.string.date_req)) },
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
+            } else {
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = { },
+                    label = { Text(stringResource(R.string.date_req)) },
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
+            }
 
-       /* Button(onClick = { showDatePicker = true }) {
-            Text("Open Date Picker")
         }
-*/
-//        if (showDatePicker) {
-//            DatePickerDialog(
-//                onDismissRequest = { showDatePicker = false },
-//                confirmButton = {
-//                    Button(onClick = {
-//                        datePickerState.selectedDateMillis?.let {
-//                            selectedDateMillis = it
-//                            selectedDateMillis = epochToLocalTimeZoneConvertor(selectedDateMillis)
-//                            dateText = convertMillisToDate(selectedDateMillis)
-//                        }
-//                        showDatePicker = false
-//                    }) {
-//                        Text("OK")
-//                    }
-//                },
 
+        // DatePickerDialog
         if (showDatePicker) {
             DatePickerDialog(
                 onDismissRequest = { showDatePicker = false },
@@ -288,10 +266,7 @@ fun ItemInputForm(
                             selectedDateMillis = it
                             selectedDateMillis = epochToLocalTimeZoneConvertor(selectedDateMillis)
                             dateText = convertMillisToDate(selectedDateMillis)
-
-                            // *** THIS IS THE KEY CHANGE ***
                             onValueChange(itemDetails.copy(date = dateText)) // Update itemDetails!
-
                         }
                         showDatePicker = false
                     }) {
@@ -308,9 +283,6 @@ fun ItemInputForm(
             }
         }
 
-
-
-   // all code below is original
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_fields),
@@ -319,20 +291,11 @@ fun ItemInputForm(
         }
     }
 }
-
 // Added three date conversion functions
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
 }
-
-/*
-fun convertDateToMillis(dateString: String): Long {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-    return formatter.parse(dateString)?.time ?: throw ParseException("Invalid date format", 0)
-}
-*/
-
 
 fun convertDateToMillis(dateString: String, dateFormat: String = "MM/dd/yyyy"): Long {
     println("convertDateToMillis called with: '$dateString'")

@@ -230,7 +230,8 @@ fun ItemDetails(
             )
             ItemDetailsRow(
                 labelResID = R.string.date,
-                itemDetail = item.date.toString(),
+                //itemDetail = item.date.toString(),
+                itemDetail = convertMillisToDate(item.date),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
