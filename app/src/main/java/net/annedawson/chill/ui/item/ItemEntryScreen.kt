@@ -140,6 +140,7 @@ fun ItemEntryBody(
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemInputForm(
@@ -221,38 +222,20 @@ fun ItemInputForm(
                 .clickable { showDatePicker = true }
                 .padding(bottom = dimensionResource(id = R.dimen.padding_small))
         ) {
-            Text(
-                text = dateText,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            //This is the key to the change
+            OutlinedTextField(
+                value = dateText, // this is the change
+                onValueChange = { },
+                label = { Text(stringResource(R.string.date_req)) },
+                enabled = false,
+                modifier = Modifier.fillMaxWidth(),
+                // This is the change needed to match the container colour
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer //this is the change.
+                )
             )
-            if (dateText == "Click to select date"){
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = { },
-                    label = { Text(stringResource(R.string.date_req)) },
-                    enabled = false,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        disabledBorderColor = MaterialTheme.colorScheme.outline,
-                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                )
-            } else {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = { },
-                    label = { Text(stringResource(R.string.date_req)) },
-                    enabled = false,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        disabledBorderColor = MaterialTheme.colorScheme.outline,
-                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                )
-            }
 
         }
 
@@ -291,6 +274,7 @@ fun ItemInputForm(
         }
     }
 }
+
 // Added three date conversion functions
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
