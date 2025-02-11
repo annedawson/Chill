@@ -16,6 +16,7 @@
 
 package net.annedawson.chill.ui.item
 
+import androidx.compose.animation.core.copy
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.LocalTextStyle
 
 object ItemEntryDestination : NavigationDestination {
     override val route = "item_entry"
@@ -233,8 +235,11 @@ fun ItemInputForm(
                 colors = OutlinedTextFieldDefaults.colors(
                     disabledBorderColor = MaterialTheme.colorScheme.outline,
                     disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer //this is the change.
-                )
+                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer, //this is the change.
+                    // This is the important new line below
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface
+                ),
+                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurface)
             )
 
         }
