@@ -61,12 +61,12 @@ class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewMod
             ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
     }
 
-    //  Check if the name, price, quantity and date are empty.
+    //  Check if the name, location, quantity and date are empty.
     //  You use this function to verify user input
     //  before adding or updating the entity in the database.
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank() && date.isNotBlank()
+            name.isNotBlank() && location.isNotBlank() && quantity.isNotBlank() && date.isNotBlank()
         }
     }
 
@@ -89,21 +89,22 @@ data class ItemUiState(
 data class ItemDetails(
     val id: Int = 0,
     val name: String = "",
-    val price: String = "",
+    //val location: Int = 0, // Changed price to location. Int for id
+    val location: String = "",
     val quantity: String = "",
     val date: String = ""
 )
 
 /**
- * Extension function to convert [ItemDetails] to [Item]. If the value of [ItemDetails.price] is
- * not a valid [Double], then the price will be set to 0.0. Similarly if the value of
+ * Extension function to convert [ItemDetails] to [Item]. If the value of [ItemDetails.location] is
+ * not a valid [Int], then the location will be set to 0. Similarly if the value of
  * [ItemDetails.quantity] is not a valid [Int], then the quantity will be set to 0,
- *  [ItemDetails.date] is not a valid [Long], then the quantity will be set to 0L,
+ *  [ItemDetails.date] is not a valid [Long], then the quantity will be set to 0L
  */
 fun ItemDetails.toItem(): Item = Item(
     id = id,
     name = name,
-    price = price.toDoubleOrNull() ?: 0.0,
+    location = location,
     quantity = quantity.toIntOrNull() ?: 0,
     date = convertDateToMillis(date) ?: 0L
 )
@@ -115,14 +116,16 @@ fun ItemDetails.toItem(): Item = Item(
 fun Item.toItemDetails(): ItemDetails = ItemDetails(
     id = id,
     name = name,
-    price = price.toString(),
+    location = location.toString(),
     quantity = quantity.toString(),
     date = convertMillisToDate(date)
 )
 
+/*
 fun Item.formatedPrice(): String {
     return NumberFormat.getCurrencyInstance().format(price)
 }
+*/
 
 /**
  * Extension function to convert [Item] to [ItemUiState]

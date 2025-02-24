@@ -29,7 +29,7 @@ data class Item(
     val id: Int = 0,  // Assign the id a default value of 0,
     // which is necessary for the id to auto generate id values.
     val name: String,
-    val price: Double,
+    val location: String,
     val quantity: Int,
     val date: Long  // Use Long for the date value.
     // It is not possible to store a Date object in a Room database.

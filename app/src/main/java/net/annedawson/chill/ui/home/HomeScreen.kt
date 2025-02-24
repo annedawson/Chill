@@ -56,7 +56,7 @@ import net.annedawson.chill.InventoryTopAppBar
 import net.annedawson.chill.R
 import net.annedawson.chill.data.Item
 import net.annedawson.chill.ui.AppViewModelProvider
-import net.annedawson.chill.ui.item.formatedPrice
+//import net.annedawson.chill.ui.item.formatedPrice
 import net.annedawson.chill.ui.navigation.NavigationDestination
 import net.annedawson.chill.ui.theme.InventoryTheme
 import java.text.SimpleDateFormat
@@ -184,7 +184,7 @@ private fun InventoryItem(
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
-                    text = item.formatedPrice(),
+                    text = item.location,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -205,16 +205,16 @@ private fun InventoryItem(
         }
     }
 
-
+}
 
     @Preview(showBackground = true)
     @Composable
     fun HomeBodyPreview() {
         InventoryTheme {
             HomeBody(listOf(
-                Item(1, "Game", 1.0, 20, 234L),
-                Item(2, "Pen", 1.0, 30, 234L),
-                Item(3, "TV", 1.0, 30, 234L)
+                Item(1, "Game", "Top Left", 20, 234L),
+                Item(2, "Pen", "Top Middle", 30, 234L),
+                Item(3, "TV", "Bottom Left", 30, 234L)
             ), onItemClick = {})
         }
     }
@@ -224,7 +224,7 @@ private fun InventoryItem(
     fun InventoryItemPreview() {
         InventoryTheme {
             InventoryItem(
-                Item(1, "Game", 1.0, 20, 234L),
+                Item(1, "Chicken", "Top Left", 20, 234L),
             )
         }
     }
@@ -236,7 +236,7 @@ private fun InventoryItem(
             HomeBody(listOf(), onItemClick = {})
         }
     }
-}
+
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())

@@ -146,7 +146,7 @@ private fun ItemDetailsBody(
         // note, ItemDetails is the name of a composable function
         // of the ItemDetailsScreen.kt file
         // AND a data class in ItemEntryViewModel.kt, where each
-        // ItemDetails property: name, price, quantity, date
+        // ItemDetails property: name, location, quantity, date
         // is a String. In the ItemDetails composable,
         // the itemeDetails string version is converted to an actual Item
         // with the correct data types for storing to the Room database.
@@ -222,8 +222,8 @@ fun ItemDetails(
                 )
             )
             ItemDetailsRow(
-                labelResID = R.string.price,
-                itemDetail = item.formatedPrice(),
+                labelResID = R.string.location_in_freezer,
+                itemDetail = item.location.toString(),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -280,7 +280,7 @@ fun ItemDetailsScreenPreview() {
         ItemDetailsBody(
             ItemDetailsUiState(
                 outOfStock = true,
-                itemDetails = ItemDetails(1, "Pen", "$100", "10")
+                itemDetails = ItemDetails(1, "Pen", "1", "10")
             ),
             onRemoveOne = {},
             onAddOne = {},
