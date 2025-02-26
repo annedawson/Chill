@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package net.annedawson.chill.ui.item
 
 import androidx.compose.foundation.clickable
@@ -73,6 +75,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+
 
 
 object ItemEntryDestination : NavigationDestination {
@@ -162,7 +165,7 @@ fun ItemInputForm(
     var showDatePicker by remember { mutableStateOf(false) }
     var dateText by remember { mutableStateOf(convertMillisToDate(selectedDateMillis)) }
     var isError by remember { mutableStateOf(false) }
-    var expanded by remember { mutableStateOf(false) } // For the dropdown
+
 
     // *** THIS IS THE NEW DEFAULT TEXT ***
     if (itemDetails.date == "0") {
@@ -174,11 +177,12 @@ fun ItemInputForm(
     // The line below fixed the error where the date picker shows the correct current date,
     // but also highlighted the day before the current date (in some timezones).
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = null)
-    // Added this line below
+    // Added this line below to get the list of string location options
     val locationOptions = FreezerLocation.values().map { it.locationName }
     var selectedLocationText by remember {
         mutableStateOf(FreezerLocation.fromId(itemDetails.location.toIntOrNull() ?: 0)?.locationName ?: 0)
     }
+
 
     Column(
         modifier = modifier,
@@ -200,8 +204,9 @@ fun ItemInputForm(
             singleLine = true
         )
 
-        // Location Dropdown section
-        OutlinedTextField(
+        /////////////////////////////
+        // Location string input section
+        /*OutlinedTextField(
             value = itemDetails.location,
             onValueChange = { onValueChange(itemDetails.copy(location = it)) },
             label = { Text(stringResource(R.string.location_req)) },
@@ -213,7 +218,16 @@ fun ItemInputForm(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
-        )
+        )*/
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        // Location Dropdown section
+
+
+        //DropdownTextField(options = listOf("Option 1", "Option 2", "Option 3"))
+        DropdownTextField(options = locationOptions)
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -297,6 +311,54 @@ fun ItemInputForm(
         }
     }
 }
+
+////////////////////////////////////////////////
+
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun DropdownTextField(options: List<String>) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options.firstOrNull() ?: "") }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+    ) {
+        OutlinedTextField(
+            readOnly = true,
+            value = selectedOptionText,
+            onValueChange = { },
+            //onValueChange = { itemDetails.copy(location = it) },
+            label = { Text("Location*") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+           // modifier = androidx.compose.ui.Modifier.menuAnchor()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            options.forEach { selectionOption ->
+                DropdownMenuItem(
+                    text = { Text(selectionOption) },
+                    onClick = {
+                        selectedOptionText = selectionOption
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewDropdownTextField() {
+    DropdownTextField(options = listOf("Option 1", "Option 2", "Option 3"))
+}
+
+
 
 
 /////////////////////////////////////////////////
