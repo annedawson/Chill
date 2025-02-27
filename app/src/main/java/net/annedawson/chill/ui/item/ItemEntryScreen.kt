@@ -166,6 +166,10 @@ fun ItemInputForm(
     var dateText by remember { mutableStateOf(convertMillisToDate(selectedDateMillis)) }
     var isError by remember { mutableStateOf(false) }
 
+    // for dropdown
+    var expanded by remember { mutableStateOf(false) }
+    //  var selectedOptionText by remember { mutableStateOf(options.firstOrNull() ?: "") }
+    var selectedOptionText by remember { mutableStateOf("Location*") }
 
     // *** THIS IS THE NEW DEFAULT TEXT ***
     if (itemDetails.date == "0") {
@@ -226,8 +230,37 @@ fun ItemInputForm(
         // Location Dropdown section
 
 
-        //DropdownTextField(options = listOf("Option 1", "Option 2", "Option 3"))
-        DropdownTextField(options = locationOptions)
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+        ) {
+            OutlinedTextField(
+                readOnly = true,
+                value = selectedOptionText,
+                onValueChange = { },
+                //onValueChange = { itemDetails.copy(location = it) },
+                label = { Text("Location*") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                // modifier = androidx.compose.ui.Modifier.menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                locationOptions.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption) },
+                        onClick = {
+                            selectedOptionText = selectionOption
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+
+
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -316,46 +349,14 @@ fun ItemInputForm(
 
 
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun DropdownTextField(options: List<String>) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options.firstOrNull() ?: "") }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-    ) {
-        OutlinedTextField(
-            readOnly = true,
-            value = selectedOptionText,
-            onValueChange = { },
-            //onValueChange = { itemDetails.copy(location = it) },
-            label = { Text("Location*") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-           // modifier = androidx.compose.ui.Modifier.menuAnchor()
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            options.forEach { selectionOption ->
-                DropdownMenuItem(
-                    text = { Text(selectionOption) },
-                    onClick = {
-                        selectedOptionText = selectionOption
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
+
+
 
 @Preview
 @Composable
 fun PreviewDropdownTextField() {
-    DropdownTextField(options = listOf("Option 1", "Option 2", "Option 3"))
+    //DropdownTextField(options = listOf("Option 1", "Option 2", "Option 3"))
 }
 
 
