@@ -23,8 +23,8 @@ import org.junit.Assert.assertTrue
 class ItemDaoTest {
     private lateinit var itemDao: ItemDao
     private lateinit var inventoryDatabase: InventoryDatabase
-    private val item1 = Item(1, "Apples", "location 1", 20)
-    private val item2 = Item(2, "Bananas", "location 1", 97)
+    private val item1 = Item(1, "Apples", "location 1", 20, 0L)
+    private val item2 = Item(2, "Bananas", "location 1", 97,0L)
 
     private suspend fun addOneItemToDb() {
         itemDao.insert(item1)

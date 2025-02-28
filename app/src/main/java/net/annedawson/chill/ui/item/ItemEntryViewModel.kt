@@ -116,7 +116,7 @@ fun ItemDetails.toItem(): Item = Item(
 fun Item.toItemDetails(): ItemDetails = ItemDetails(
     id = id,
     name = name,
-    location = location.toString(),
+    location = location,
     quantity = quantity.toString(),
     date = convertMillisToDate(date)
 )

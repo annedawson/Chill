@@ -1,6 +1,6 @@
 package net.annedawson.chill.data
 
-enum class FreezerLocation(val locationId: Int, val locationName: String) {
+enum class FreezerLocation(val id: Int, val locationName: String) {
     TOP_LEFT(0, "Top-Left"),
     TOP_MIDDLE(1, "Top-Middle"),
     TOP_RIGHT(2, "Top-Right"),
@@ -15,7 +15,7 @@ enum class FreezerLocation(val locationId: Int, val locationName: String) {
 
     companion object {
         fun fromId(id: Int): FreezerLocation? {
-            return values().find { it.locationId == id }
+            return values().find { it.id == id }
         }
     }
 }

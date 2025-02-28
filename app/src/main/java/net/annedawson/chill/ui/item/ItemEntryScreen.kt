@@ -29,9 +29,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.ExposedDropdownMenuDefaults
-import androidx.compose.material.DropdownMenuItem
+//import androidx.compose.material.ExposedDropdownMenuBox
+//import androidx.compose.material.ExposedDropdownMenuDefaults
+//import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.TextField
 import androidx.compose.material3.Button
@@ -76,7 +76,9 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.DropdownMenuItem
 
 object ItemEntryDestination : NavigationDestination {
     override val route = "item_entry"
@@ -161,15 +163,14 @@ fun ItemInputForm(
     onValueChange: (ItemDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
+    // for datepicker
     var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var showDatePicker by remember { mutableStateOf(false) }
     var dateText by remember { mutableStateOf(convertMillisToDate(selectedDateMillis)) }
     var isError by remember { mutableStateOf(false) }
-
-    // for dropdown
-    var expanded by remember { mutableStateOf(false) }
-    //  var selectedOptionText by remember { mutableStateOf(options.firstOrNull() ?: "") }
-    var selectedOptionText by remember { mutableStateOf("Location*") }
+    // The line below fixed the error where the date picker shows the correct current date,
+    // but also highlighted the day before the current date (in some timezones).
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = null)
 
     // *** THIS IS THE NEW DEFAULT TEXT ***
     if (itemDetails.date == "0") {
@@ -178,9 +179,10 @@ fun ItemInputForm(
         dateText = itemDetails.date
     }
 
-    // The line below fixed the error where the date picker shows the correct current date,
-    // but also highlighted the day before the current date (in some timezones).
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = null)
+    // for dropdown
+    var expanded by remember { mutableStateOf(false) }
+    //  var selectedOptionText by remember { mutableStateOf(options.firstOrNull() ?: "") }
+    var selectedOptionText by remember { mutableStateOf("Location*") }
     // Added this line below to get the list of string location options
     val locationOptions = FreezerLocation.values().map { it.locationName }
     var selectedLocationText by remember {
@@ -229,39 +231,43 @@ fun ItemInputForm(
 
         // Location Dropdown section
 
-
+// Location Dropdown section
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
+            modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
                 readOnly = true,
                 value = selectedOptionText,
-                onValueChange = { },
-                //onValueChange = { itemDetails.copy(location = it) },
-                label = { Text("Location*") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                // modifier = androidx.compose.ui.Modifier.menuAnchor()
+                onValueChange = { }, // No need to update here, handled in DropdownMenuItem
+                label = { Text(stringResource(R.string.location_req)) },
+                trailingIcon = { androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
             )
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
+                modifier = Modifier.exposedDropdownSize()
             ) {
                 locationOptions.forEach { selectionOption ->
                     DropdownMenuItem(
                         text = { Text(selectionOption) },
                         onClick = {
                             selectedOptionText = selectionOption
+                            // Update itemDetails.location with the ID of the selected location
+                            val selectedLocationId =
+                                FreezerLocation.values().find { it.locationName == selectionOption }?.id
+                                    ?: 0
+                            onValueChange(itemDetails.copy(location = selectedLocationId.toString()))
                             expanded = false
                         }
                     )
                 }
             }
         }
-
-
-
-
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         // quantity section
