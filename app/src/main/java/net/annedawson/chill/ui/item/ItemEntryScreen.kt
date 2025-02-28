@@ -257,11 +257,23 @@ fun ItemInputForm(
                         text = { Text(selectionOption) },
                         onClick = {
                             selectedOptionText = selectionOption
-                            // Update itemDetails.location with the ID of the selected location
+
+                           /* // Update itemDetails.location with the ID of the selected location
                             val selectedLocationId =
                                 FreezerLocation.values().find { it.locationName == selectionOption }?.id
                                     ?: 0
-                            onValueChange(itemDetails.copy(location = selectedLocationId.toString()))
+                            onValueChange(itemDetails.copy(location = selectedLocationId.toString()))*/
+
+                            //try
+
+                            // Update itemDetails.location with the locationName of the selected location
+                            val selectedLocationName =
+                                FreezerLocation.values().find { it.locationName == selectionOption }?.locationName
+                                    ?: "" // Provide a default empty string if not found
+                            onValueChange(itemDetails.copy(location = selectedLocationName))
+
+                            //try
+
                             expanded = false
                         }
                     )
