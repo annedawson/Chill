@@ -239,13 +239,22 @@ fun ItemInputForm(
         ) {
             OutlinedTextField(
                 readOnly = true,
-                value = selectedOptionText,
+                // value = selectedOptionText,
+                value = itemDetails.location,
                 onValueChange = { }, // No need to update here, handled in DropdownMenuItem
                 label = { Text(stringResource(R.string.location_req)) },
                 trailingIcon = { androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 modifier = Modifier
                     .menuAnchor()
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                    // TRY THIS OUT - add comma above
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                )
+                //
+
             )
             ExposedDropdownMenu(
                 expanded = expanded,
