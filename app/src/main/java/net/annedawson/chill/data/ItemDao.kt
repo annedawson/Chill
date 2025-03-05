@@ -22,7 +22,7 @@ interface ItemDao {
     @Query("SELECT * from items WHERE id = :id") //
     fun getItem(id: Int): Flow<Item>
 
-    @Query("SELECT * from items ORDER BY name ASC")
+    @Query("SELECT * from items ORDER BY LOWER(name) ASC")
     fun getAllItems(): Flow<List<Item>>
 }
 
