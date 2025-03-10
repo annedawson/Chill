@@ -91,12 +91,12 @@ class ItemDaoTest {
     @Throws(Exception::class)
     fun daoUpdateItems_updatesItemsInDB() = runBlocking {
         addTwoItemsToDb()
-        itemDao.update(Item(1, "Apples", 15.0, 25))
-        itemDao.update(Item(2, "Bananas", 5.0, 50))
+        itemDao.update(Item(1, "Apples", "Top-Left",15, 25))
+        itemDao.update(Item(2, "Bananas", "Top-Left", 50,25))
 
         val allItems = itemDao.getAllItems().first()
-        assertEquals(allItems[0], Item(1, "Apples", 15.0, 25))
-        assertEquals(allItems[1], Item(2, "Bananas", 5.0, 50))
+        assertEquals(allItems[0], Item(1, "Apples", "Top-Right", 25,25))
+        assertEquals(allItems[1], Item(2, "Bananas", "Middle-Middle", 50,25))
     }
 
     @Test
