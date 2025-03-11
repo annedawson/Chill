@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -211,6 +212,35 @@ fun ItemInputForm(
         )
 
         /////////////////////////////
+        // quantity section
+        OutlinedTextField(
+            value = itemDetails.quantity,
+           
+           // onValueChange = { onValueChange(itemDetails.copy(quantity = it)) },
+            onValueChange = { newValue ->
+                // Filter input to allow only digits
+                if (newValue.all { it.isDigit() }) {
+                    onValueChange(itemDetails.copy(quantity = newValue))
+                }
+                // If the new value is empty, still update the state
+                else if (newValue.isEmpty()) {
+                    onValueChange(itemDetails.copy(quantity = newValue))
+                }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            label = { Text(stringResource(R.string.quantity_req)) },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+
+
+        /////////////////////////////
         // Location string input section
         /*OutlinedTextField(
             value = itemDetails.location,
@@ -227,11 +257,8 @@ fun ItemInputForm(
         )*/
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-
-
         // Location Dropdown section
 
-// Location Dropdown section
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
@@ -291,21 +318,6 @@ fun ItemInputForm(
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        // quantity section
-        OutlinedTextField(
-            value = itemDetails.quantity,
-            onValueChange = { onValueChange(itemDetails.copy(quantity = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(stringResource(R.string.quantity_req)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
 
         /////////////////////////////////////////////////////
         // Date picker section
@@ -359,7 +371,10 @@ fun ItemInputForm(
                     }
                 }
             ) {
-                DatePicker(state = datePickerState)
+                //DatePicker(state = datePickerState)
+                // This fixes the incorrect display of the datepicker in landscape orientation:
+                DatePicker( modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                            state = datePickerState)
             }
         }
 

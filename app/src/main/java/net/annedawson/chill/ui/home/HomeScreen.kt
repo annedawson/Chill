@@ -1,45 +1,12 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package net.annedawson.chill.ui.home
 
-// In Android Studio, use the menu Code -> Optimise imports
-// to optimize the layout of the import statements
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,21 +23,16 @@ import net.annedawson.chill.InventoryTopAppBar
 import net.annedawson.chill.R
 import net.annedawson.chill.data.Item
 import net.annedawson.chill.ui.AppViewModelProvider
-//import net.annedawson.chill.ui.item.formatedPrice
 import net.annedawson.chill.ui.navigation.NavigationDestination
 import net.annedawson.chill.ui.theme.InventoryTheme
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
     override val titleRes = R.string.app_name
 }
 
-/**
- * Entry route for Home screen
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -81,6 +43,7 @@ fun HomeScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val homeUiState by viewModel.homeUiState.collectAsState()
+    val sortOrder by viewModel.sortOrder.collectAsState()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -102,14 +65,15 @@ fun HomeScreen(
                     contentDescription = stringResource(R.string.item_entry_title)
                 )
             }
-        },
+        }
     ) { innerPadding ->
         HomeBody(
-            //itemList = listOf(),
             itemList = homeUiState.itemList,
             onItemClick = navigateToItemUpdate,
             modifier = modifier.fillMaxSize(),
-            contentPadding = innerPadding
+            contentPadding = innerPadding,
+            sortOrder = sortOrder,
+            onSortOrderChange = { viewModel.setSortOrder(it) }
         )
     }
 }
@@ -120,17 +84,33 @@ private fun HomeBody(
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    sortOrder: SortOrder,
+    onSortOrderChange: (SortOrder) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier,
+        modifier = modifier
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(onClick = { onSortOrderChange(SortOrder.BY_NAME) }) {
+                Text(text = "Sort by Name")
+            }
+            Button(onClick = { onSortOrderChange(SortOrder.BY_QUANTITY) }) {
+                Text(text = "Sort by Quantity")
+            }
+        }
+
         if (itemList.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_item_description),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(contentPadding),
+                modifier = Modifier.padding(contentPadding)
             )
         } else {
             InventoryList(
@@ -155,10 +135,12 @@ private fun InventoryList(
         contentPadding = contentPadding
     ) {
         items(items = itemList, key = { it.id }) { item ->
-            InventoryItem(item = item,
+            InventoryItem(
+                item = item,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
-                    .clickable { onItemClick(item) })
+                    .clickable { onItemClick(item) }
+            )
         }
     }
 }
@@ -197,46 +179,53 @@ private fun InventoryItem(
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
-                    //text = "Date: " + item.date.toString() + "",
                     text = convertMillisToDate(item.date),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
         }
     }
-
 }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun HomeBodyPreview() {
-        InventoryTheme {
-            HomeBody(listOf(
-                Item(1, "Game", "Top Left", 20, 234L),
-                Item(2, "Pen", "Top Middle", 30, 234L),
-                Item(3, "TV", "Bottom Left", 30, 234L)
-            ), onItemClick = {})
-        }
+@Preview(showBackground = true)
+@Composable
+fun HomeBodyPreview() {
+    InventoryTheme {
+        HomeBody(
+            listOf(
+                Item(1, "Game", "Top Left", 7, 234L),
+                Item(2, "Pen", "Top Middle", 13, 234L),
+                Item(3, "TV", "Bottom Left", 3, 234L)
+            ),
+            onItemClick = {},
+            sortOrder = SortOrder.BY_QUANTITY,
+            onSortOrderChange = {}
+        )
     }
+}
 
-    @Preview(showBackground = true)
-    @Composable
-    fun InventoryItemPreview() {
-        InventoryTheme {
-            InventoryItem(
-                Item(1, "Chicken", "Top Left", 20, 234L),
-            )
-        }
+@Preview(showBackground = true)
+@Composable
+fun InventoryItemPreview() {
+    InventoryTheme {
+        InventoryItem(
+            Item(1, "Chicken", "Top Left", 20, 234L),
+        )
     }
+}
 
-    @Preview(showBackground = true)
-    @Composable
-    fun HomeBodyEmptyListPreview() {
-        InventoryTheme {
-            HomeBody(listOf(), onItemClick = {})
-        }
+@Preview(showBackground = true)
+@Composable
+fun HomeBodyEmptyListPreview() {
+    InventoryTheme {
+        HomeBody(
+            listOf(),
+            onItemClick = {},
+            sortOrder = SortOrder.BY_NAME,
+            onSortOrderChange = {}
+        )
     }
-
+}
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
