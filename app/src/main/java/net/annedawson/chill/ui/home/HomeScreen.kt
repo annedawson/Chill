@@ -150,11 +150,17 @@ private fun HomeBody(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Button(onClick = { onSortOrderChange(SortOrder.BY_NAME) }) {
-                    Text(text = "Sort by Name")
+                Button(onClick = { onSortOrderChange(SortOrder.BY_NAME) }
+                        ,modifier = Modifier.padding(4.dp)) {
+                    Text(text = "name", style = MaterialTheme.typography.labelMedium)
                 }
-                Button(onClick = { onSortOrderChange(SortOrder.BY_QUANTITY) }) {
-                    Text(text = "Sort by Quantity")
+                Button(onClick = { onSortOrderChange(SortOrder.BY_QUANTITY) }
+                        ,modifier = Modifier.padding(4.dp) ) {
+                    Text(text = "quant", style = MaterialTheme.typography.labelMedium)
+                }
+                Button(onClick = { onSortOrderChange(SortOrder.BY_LOCATION) }
+                        ,modifier = Modifier.padding(4.dp)) {
+                    Text(text = "loc", style = MaterialTheme.typography.labelMedium)
                 }
             }
         }
