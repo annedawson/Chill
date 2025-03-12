@@ -79,7 +79,10 @@ fun HomeScreen(
     }
 }
 
-@Composable
+///////////////////////////////////////////////
+// HomeBody()
+
+/*@Composable
 private fun HomeBody(
     itemList: List<Item>,
     onItemClick: (Int) -> Unit,
@@ -122,7 +125,59 @@ private fun HomeBody(
             )
         }
     }
+}*/
+
+
+
+
+@Composable
+private fun HomeBody(
+    itemList: List<Item>,
+    onItemClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    sortOrder: SortOrder,
+    onSortOrderChange: (SortOrder) -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        if (itemList.isNotEmpty()) {  // Conditionally render the sort buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(onClick = { onSortOrderChange(SortOrder.BY_NAME) }) {
+                    Text(text = "Sort by Name")
+                }
+                Button(onClick = { onSortOrderChange(SortOrder.BY_QUANTITY) }) {
+                    Text(text = "Sort by Quantity")
+                }
+            }
+        }
+
+        if (itemList.isEmpty()) {
+            Text(
+                text = stringResource(R.string.no_item_description),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(contentPadding)
+            )
+        } else {
+            InventoryList(
+                itemList = itemList,
+                onItemClick = { onItemClick(it.id) },
+                contentPadding = contentPadding,
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+            )
+        }
+    }
 }
+///////////////////////////////////////////////
+// end of HomeBody()
 
 @Composable
 private fun InventoryList(
