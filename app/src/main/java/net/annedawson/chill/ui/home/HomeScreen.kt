@@ -148,19 +148,23 @@ private fun HomeBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Button(onClick = { onSortOrderChange(SortOrder.BY_NAME) }
-                        ,modifier = Modifier.padding(4.dp)) {
+                        ,modifier = Modifier.padding(3.dp)) {
                     Text(text = "name", style = MaterialTheme.typography.labelMedium)
                 }
                 Button(onClick = { onSortOrderChange(SortOrder.BY_QUANTITY) }
-                        ,modifier = Modifier.padding(4.dp) ) {
+                        ,modifier = Modifier.padding(3.dp) ) {
                     Text(text = "quant", style = MaterialTheme.typography.labelMedium)
                 }
                 Button(onClick = { onSortOrderChange(SortOrder.BY_LOCATION) }
-                        ,modifier = Modifier.padding(4.dp)) {
+                        ,modifier = Modifier.padding(3.dp)) {
                     Text(text = "loc", style = MaterialTheme.typography.labelMedium)
+                }
+                Button(onClick = { onSortOrderChange(SortOrder.BY_DATE) }
+                        ,modifier = Modifier.padding(3.dp)) {
+                    Text(text = "date", style = MaterialTheme.typography.labelMedium)
                 }
             }
         }

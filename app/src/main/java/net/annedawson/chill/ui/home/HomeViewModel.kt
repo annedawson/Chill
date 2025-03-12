@@ -9,7 +9,8 @@ import net.annedawson.chill.data.ItemsRepository
 enum class SortOrder {
     BY_NAME,
     BY_QUANTITY,
-    BY_LOCATION
+    BY_LOCATION,
+    BY_DATE
 }
 
 class HomeViewModel(private val itemsRepository: ItemsRepository) : ViewModel() {
@@ -24,6 +25,7 @@ class HomeViewModel(private val itemsRepository: ItemsRepository) : ViewModel() 
                     SortOrder.BY_NAME -> items.sortedBy { it.name }
                     SortOrder.BY_QUANTITY -> items.sortedBy { it.quantity }
                     SortOrder.BY_LOCATION -> items.sortedBy { it.location }
+                    SortOrder.BY_DATE -> items.sortedBy { it.date }
                 }
             )
         }
