@@ -70,7 +70,8 @@ fun HomeScreen(
         HomeBody(
             itemList = homeUiState.itemList,
             onItemClick = navigateToItemUpdate,
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize().padding(innerPadding),
+            //modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding,
             sortOrder = sortOrder,
             onSortOrderChange = { viewModel.setSortOrder(it) }
