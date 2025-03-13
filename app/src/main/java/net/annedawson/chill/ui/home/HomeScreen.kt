@@ -143,29 +143,33 @@ private fun HomeBody(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        if (itemList.isNotEmpty()) {  // Conditionally render the sort buttons
+        if (itemList.isNotEmpty()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Button(onClick = { onSortOrderChange(SortOrder.BY_NAME) }
-                        ,modifier = Modifier.padding(3.dp)) {
-                    Text(text = "name", style = MaterialTheme.typography.labelMedium)
-                }
-                Button(onClick = { onSortOrderChange(SortOrder.BY_QUANTITY) }
-                        ,modifier = Modifier.padding(3.dp) ) {
-                    Text(text = "quant", style = MaterialTheme.typography.labelMedium)
-                }
-                Button(onClick = { onSortOrderChange(SortOrder.BY_LOCATION) }
-                        ,modifier = Modifier.padding(3.dp)) {
-                    Text(text = "loc", style = MaterialTheme.typography.labelMedium)
-                }
-                Button(onClick = { onSortOrderChange(SortOrder.BY_DATE) }
-                        ,modifier = Modifier.padding(3.dp)) {
-                    Text(text = "date", style = MaterialTheme.typography.labelMedium)
-                }
+                SortButton(
+                    text = "Name",
+                    isActive = sortOrder == SortOrder.BY_NAME,
+                    onClick = { onSortOrderChange(SortOrder.BY_NAME) }
+                )
+                SortButton(
+                    text = "Quant",
+                    isActive = sortOrder == SortOrder.BY_QUANTITY,
+                    onClick = { onSortOrderChange(SortOrder.BY_QUANTITY) }
+                )
+                SortButton(
+                    text = "Loc",
+                    isActive = sortOrder == SortOrder.BY_LOCATION,
+                    onClick = { onSortOrderChange(SortOrder.BY_LOCATION) }
+                )
+                SortButton(
+                    text = "Date",
+                    isActive = sortOrder == SortOrder.BY_DATE,
+                    onClick = { onSortOrderChange(SortOrder.BY_DATE) }
+                )
             }
         }
 
@@ -186,6 +190,27 @@ private fun HomeBody(
         }
     }
 }
+
+@Composable
+private fun SortButton(
+    text: String,
+    isActive: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.padding(3.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isActive) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+            contentColor = if (isActive) MaterialTheme.colorScheme.onPrimary
+            else MaterialTheme.colorScheme.onSurface
+        )
+    ) {
+        Text(text = text, style = MaterialTheme.typography.labelMedium)
+    }
+}
+
 ///////////////////////////////////////////////
 // end of HomeBody()
 
@@ -259,9 +284,9 @@ fun HomeBodyPreview() {
     InventoryTheme {
         HomeBody(
             listOf(
-                Item(1, "Game", "Top Left", 7, 234L),
-                Item(2, "Pen", "Top Middle", 13, 234L),
-                Item(3, "TV", "Bottom Left", 3, 234L)
+                Item(1, "pork chop", "Top Left", 7, 234L),
+                Item(2, "pizza", "Top Middle", 13, 234L),
+                Item(3, "bread", "Bottom Left", 3, 234L)
             ),
             onItemClick = {},
             sortOrder = SortOrder.BY_QUANTITY,
