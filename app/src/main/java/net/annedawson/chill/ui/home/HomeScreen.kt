@@ -147,8 +147,8 @@ private fun HomeBody(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 SortButton(
                     text = "Name",
